@@ -40,6 +40,8 @@ def _process_single_payout(payout_id):
             )
         elif result <= PROCESSING_SUCCESS_RATE + PROCESSING_FAIL_RATE:
             payout.transition_to(Payout.FAILED)
+            # No completed debit entry is created. When a payout fails, the held funds
+            # are returned by releasing the payout from pending/processing state.
         else:
             payout.state = Payout.PROCESSING
 

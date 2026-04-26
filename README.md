@@ -5,8 +5,8 @@ Minimal payout engine for merchant balances, payout requests, idempotency, and b
 ## Backend
 
 - Django + Django REST Framework
-- Django-Q for background payout processing
-- SQLite for local development, PostgreSQL supported via `DATABASE_URL`
+- Huey for background payout processing
+- PostgreSQL preferred locally via Docker Compose
 
 ### Setup
 
@@ -31,6 +31,21 @@ Run the Huey background worker in a separate shell:
 ```powershell
 python -m huey_consumer backend.huey_conf.huey
 ```
+
+### Local Docker
+
+```powershell
+docker compose up --build
+```
+
+Then in another shell, run migrations and seed data:
+
+```powershell
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py seed_merchants
+```
+
+The backend will be available at `http://localhost:8000` and the frontend at `http://localhost:5173`.
 
 ### Frontend
 
