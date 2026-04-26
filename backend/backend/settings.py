@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'replace-this-for-production'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.environ.get('SECRET_KEY', 'replace-this-for-production')
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,8 +51,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+DATABASE_URL = os.environ.get('DATABASE_URL')
 POSTGRES_HOST = os.environ.get('POSTGRES_HOST')
-if POSTGRES_HOST:
+
+if DATABASE_URL:
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
+elif POSTGRES_HOST:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
