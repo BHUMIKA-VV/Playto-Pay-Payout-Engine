@@ -1,5 +1,6 @@
 import uuid
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
@@ -14,7 +15,7 @@ from .serializers import (
 
 class MerchantDashboardView(APIView):
     def get(self, request, merchant_id):
-        merchant = Merchant.objects.get(pk=merchant_id)
+        merchant = get_object_or_404(Merchant, pk=merchant_id)
         data = {
             'merchant_id': merchant.id,
             'name': merchant.name,

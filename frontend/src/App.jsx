@@ -26,11 +26,21 @@ function App() {
   }, [])
 
   const fetchDashboard = async () => {
-    const response = await fetch(`${API_BASE}/api/v1/merchants/${MERCHANT_ID}/dashboard/`)
-    if (!response.ok) return
-    const data = await response.json()
-    setDashboard(data)
-    setBankAccountId(data?.name ? data.name.replace(/\s+/g, '-').toUpperCase() : '')
+    setError('')
+    try {
+      const response = await fetch(`${API_BASE}/api/v1/merchants/${MERCHANT_ID}/dashboard/`)
+      const body = await response.json()
+      if (!response.ok) {
+        setError(body.detail || 'Unable to load dashboard')
+        setDashboard(null)
+        return
+      }
+      setDashboard(body)
+      setBankAccountId(body?.name ? body.name.replace(/\s+/g, '-').toUpperCase() : '')
+    } catch (err) {
+      setError('Unable to load dashboard')
+      setDashboard(null)
+    }
   }
 
   const submitPayout = async (event) => {
@@ -81,7 +91,10 @@ function App() {
             </div>
           </div>
         ) : (
-          <p className="mt-8 text-slate-600">Loading dashboard...</p>
+          <>
+            <p className="mt-8 text-slate-600">Loading dashboard...</p>
+            {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+          </>
         )}
 
         <div className="mt-10 grid gap-6 lg:grid-cols-2">

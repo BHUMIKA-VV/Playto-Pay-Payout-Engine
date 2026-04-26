@@ -38,12 +38,14 @@ python -m huey_consumer backend.huey_conf.huey
 docker compose up --build
 ```
 
-Then in another shell, run migrations and seed data:
+Then in another shell, run migrations and seed demo data:
 
 ```powershell
 docker compose exec backend python manage.py migrate
 docker compose exec backend python manage.py seed_merchants
 ```
+
+If the dashboard does not load, confirm the backend has merchant data seeded and check the API logs for errors.
 
 The backend will be available at `http://localhost:8000` and the frontend at `http://localhost:5173`.
 
