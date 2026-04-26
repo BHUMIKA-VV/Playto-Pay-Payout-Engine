@@ -1,0 +1,4 @@
+Django>=4.2
+djangorestframework>=3.14
+huey==2.0.0
+sqlparse
