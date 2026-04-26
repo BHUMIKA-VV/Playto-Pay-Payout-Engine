@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.db import connection
 from payouts_app.models import Merchant, MerchantLedgerEntry
 
 
@@ -8,6 +9,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         MerchantLedgerEntry.objects.all().delete()
         Merchant.objects.all().delete()
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT setval(pg_get_serial_sequence('payouts_app_merchant', 'id'), 1, false)")
+            cursor.execute("SELECT setval(pg_get_serial_sequence('payouts_app_merchantledgerentry', 'id'), 1, false)")
 
         merchants = [
             Merchant(name='Pixel Studio', bank_account_id='BANK-PIXEL-01'),
